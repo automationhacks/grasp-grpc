@@ -91,7 +91,7 @@ def createStartScripts(String mainClassName) {
     }
 }
 
-createStartScripts('io.grpc.examples.helloworld.HelloWorldClient')
-createStartScripts('io.grpc.examples.helloworld.HelloWorldServer')
-createStartScripts('io.grpc.examples.routeguide.RouteGuideClient')
-createStartScripts('io.grpc.examples.routeguide.RouteGuideServer')
+createStartScripts('io.automationhacks.helloworld.HelloWorldClient')
+createStartScripts('io.automationhacks.helloworld.HelloWorldServer')
+createStartScripts('io.automationhacks.routeguide.RouteGuideClient')
+createStartScripts('io.automationhacks.routeguide.RouteGuideServer')
