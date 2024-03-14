@@ -24,10 +24,10 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
 import com.google.protobuf.Message;
-import io.grpc.Status;
-import io.grpc.StatusRuntimeException;
 import io.automationhacks.routeguide.RouteGuideClient.TestHelper;
 import io.automationhacks.routeguide.RouteGuideGrpc.RouteGuideImplBase;
+import io.grpc.Status;
+import io.grpc.StatusRuntimeException;
 import io.grpc.inprocess.InProcessChannelBuilder;
 import io.grpc.inprocess.InProcessServerBuilder;
 import io.grpc.stub.StreamObserver;
@@ -48,22 +48,18 @@ import org.junit.runners.JUnit4;
 import org.mockito.ArgumentCaptor;
 
 /**
- * Unit tests for {@link RouteGuideClient}.
- * For demonstrating how to write gRPC unit test only.
- * Not intended to provide a high code coverage or to test every major usecase.
+ * Unit tests for {@link RouteGuideClient}. For demonstrating how to write gRPC unit test only. Not
+ * intended to provide a high code coverage or to test every major usecase.
  *
- * directExecutor() makes it easier to have deterministic tests.
+ * <p>directExecutor() makes it easier to have deterministic tests.
  *
- * <p>For basic unit test examples see {@link io.automationhacks.helloworld.HelloWorldClientTest} and
- * {@link io.automationhacks.helloworld.HelloWorldServerTest}.
+ * <p>For basic unit test examples see {@link io.automationhacks.helloworld.HelloWorldClientTest}
+ * and {@link io.automationhacks.helloworld.HelloWorldServerTest}.
  */
 @RunWith(JUnit4.class)
 public class RouteGuideClientTest {
-  /**
-   * This rule manages automatic graceful shutdown for the registered server at the end of test.
-   */
-  @Rule
-  public final GrpcCleanupRule grpcCleanup = new GrpcCleanupRule();
+  /** This rule manages automatic graceful shutdown for the registered server at the end of test. */
+  @Rule public final GrpcCleanupRule grpcCleanup = new GrpcCleanupRule();
 
   private final MutableHandlerRegistry serviceRegistry = new MutableHandlerRegistry();
   private final TestHelper testHelper = mock(TestHelper.class);
@@ -80,7 +76,7 @@ public class RouteGuideClientTest {
         @Override
         public int nextInt(int bound) {
           int retVal = isForSleep ? -500 : (index++ % bound);
-          isForSleep = ! isForSleep;
+          isForSleep = !isForSleep;
           return retVal;
         }
       };
@@ -91,19 +87,23 @@ public class RouteGuideClientTest {
     // Generate a unique in-process server name.
     String serverName = InProcessServerBuilder.generateName();
     // Use a mutable service registry for later registering the service impl for each test case.
-    grpcCleanup.register(InProcessServerBuilder.forName(serverName)
-        .fallbackHandlerRegistry(serviceRegistry).directExecutor().build().start());
-    client = new RouteGuideClient(grpcCleanup.register(
-        InProcessChannelBuilder.forName(serverName).directExecutor().build()));
+    grpcCleanup.register(
+        InProcessServerBuilder.forName(serverName)
+            .fallbackHandlerRegistry(serviceRegistry)
+            .directExecutor()
+            .build()
+            .start());
+    client =
+        new RouteGuideClient(
+            grpcCleanup.register(
+                InProcessChannelBuilder.forName(serverName).directExecutor().build()));
     client.setTestHelper(testHelper);
   }
 
-  /**
-   * Example for testing blocking unary call.
-   */
+  /** Example for testing blocking unary call. */
   @Test
   public void getFeature() {
-    Point requestPoint =  Point.newBuilder().setLatitude(-1).setLongitude(-1).build();
+    Point requestPoint = Point.newBuilder().setLatitude(-1).setLongitude(-1).build();
     Point responsePoint = Point.newBuilder().setLatitude(-123).setLongitude(-123).build();
     final AtomicReference<Point> pointDelivered = new AtomicReference<Point>();
     final Feature responseFeature =
@@ -128,12 +128,10 @@ public class RouteGuideClientTest {
     verify(testHelper, never()).onRpcError(any(Throwable.class));
   }
 
-  /**
-   * Example for testing blocking unary call.
-   */
+  /** Example for testing blocking unary call. */
   @Test
   public void getFeature_error() {
-    Point requestPoint =  Point.newBuilder().setLatitude(-1).setLongitude(-1).build();
+    Point requestPoint = Point.newBuilder().setLatitude(-1).setLongitude(-1).build();
     final AtomicReference<Point> pointDelivered = new AtomicReference<Point>();
     final StatusRuntimeException fakeError = new StatusRuntimeException(Status.DATA_LOSS);
 
@@ -156,9 +154,7 @@ public class RouteGuideClientTest {
     assertEquals(fakeError.getStatus(), Status.fromThrowable(errorCaptor.getValue()));
   }
 
-  /**
-   * Example for testing blocking server-streaming.
-   */
+  /** Example for testing blocking server-streaming. */
   @Test
   public void listFeatures() {
     final Feature responseFeature1 = Feature.newBuilder().setName("feature 1").build();
@@ -184,23 +180,21 @@ public class RouteGuideClientTest {
 
     client.listFeatures(1, 2, 3, 4);
 
-    assertEquals(Rectangle.newBuilder()
-                     .setLo(Point.newBuilder().setLatitude(1).setLongitude(2).build())
-                     .setHi(Point.newBuilder().setLatitude(3).setLongitude(4).build())
-                     .build(),
-                 rectangleDelivered.get());
+    assertEquals(
+        Rectangle.newBuilder()
+            .setLo(Point.newBuilder().setLatitude(1).setLongitude(2).build())
+            .setHi(Point.newBuilder().setLatitude(3).setLongitude(4).build())
+            .build(),
+        rectangleDelivered.get());
     verify(testHelper).onMessage(responseFeature1);
     verify(testHelper).onMessage(responseFeature2);
     verify(testHelper, never()).onRpcError(any(Throwable.class));
   }
 
-  /**
-   * Example for testing blocking server-streaming.
-   */
+  /** Example for testing blocking server-streaming. */
   @Test
   public void listFeatures_error() {
-    final Feature responseFeature1 =
-        Feature.newBuilder().setName("feature 1").build();
+    final Feature responseFeature1 = Feature.newBuilder().setName("feature 1").build();
     final AtomicReference<Rectangle> rectangleDelivered = new AtomicReference<Rectangle>();
     final StatusRuntimeException fakeError = new StatusRuntimeException(Status.INVALID_ARGUMENT);
 
@@ -222,42 +216,37 @@ public class RouteGuideClientTest {
 
     client.listFeatures(1, 2, 3, 4);
 
-    assertEquals(Rectangle.newBuilder()
-                     .setLo(Point.newBuilder().setLatitude(1).setLongitude(2).build())
-                     .setHi(Point.newBuilder().setLatitude(3).setLongitude(4).build())
-                     .build(),
-                 rectangleDelivered.get());
+    assertEquals(
+        Rectangle.newBuilder()
+            .setLo(Point.newBuilder().setLatitude(1).setLongitude(2).build())
+            .setHi(Point.newBuilder().setLatitude(3).setLongitude(4).build())
+            .build(),
+        rectangleDelivered.get());
     ArgumentCaptor<Throwable> errorCaptor = ArgumentCaptor.forClass(Throwable.class);
     verify(testHelper).onMessage(responseFeature1);
     verify(testHelper).onRpcError(errorCaptor.capture());
     assertEquals(fakeError.getStatus(), Status.fromThrowable(errorCaptor.getValue()));
   }
 
-  /**
-   * Example for testing async client-streaming.
-   */
+  /** Example for testing async client-streaming. */
   @Test
   public void recordRoute() throws Exception {
     client.setRandom(noRandomness);
     Point point1 = Point.newBuilder().setLatitude(1).setLongitude(1).build();
     Point point2 = Point.newBuilder().setLatitude(2).setLongitude(2).build();
     Point point3 = Point.newBuilder().setLatitude(3).setLongitude(3).build();
-    Feature requestFeature1 =
-        Feature.newBuilder().setLocation(point1).build();
-    Feature requestFeature2 =
-        Feature.newBuilder().setLocation(point2).build();
-    Feature requestFeature3 =
-        Feature.newBuilder().setLocation(point3).build();
-    final List<Feature> features = Arrays.asList(
-        requestFeature1, requestFeature2, requestFeature3);
+    Feature requestFeature1 = Feature.newBuilder().setLocation(point1).build();
+    Feature requestFeature2 = Feature.newBuilder().setLocation(point2).build();
+    Feature requestFeature3 = Feature.newBuilder().setLocation(point3).build();
+    final List<Feature> features = Arrays.asList(requestFeature1, requestFeature2, requestFeature3);
     final List<Point> pointsDelivered = new ArrayList<>();
-    final RouteSummary fakeResponse = RouteSummary
-        .newBuilder()
-        .setPointCount(7)
-        .setFeatureCount(8)
-        .setDistance(9)
-        .setElapsedTime(10)
-        .build();
+    final RouteSummary fakeResponse =
+        RouteSummary.newBuilder()
+            .setPointCount(7)
+            .setFeatureCount(8)
+            .setDistance(9)
+            .setElapsedTime(10)
+            .build();
 
     // implement the fake service
     RouteGuideImplBase recordRouteImpl =
@@ -265,22 +254,22 @@ public class RouteGuideClientTest {
           @Override
           public StreamObserver<Point> recordRoute(
               final StreamObserver<RouteSummary> responseObserver) {
-            StreamObserver<Point> requestObserver = new StreamObserver<Point>() {
-              @Override
-              public void onNext(Point value) {
-                pointsDelivered.add(value);
-              }
+            StreamObserver<Point> requestObserver =
+                new StreamObserver<Point>() {
+                  @Override
+                  public void onNext(Point value) {
+                    pointsDelivered.add(value);
+                  }
 
-              @Override
-              public void onError(Throwable t) {
-              }
+                  @Override
+                  public void onError(Throwable t) {}
 
-              @Override
-              public void onCompleted() {
-                responseObserver.onNext(fakeResponse);
-                responseObserver.onCompleted();
-              }
-            };
+                  @Override
+                  public void onCompleted() {
+                    responseObserver.onNext(fakeResponse);
+                    responseObserver.onCompleted();
+                  }
+                };
 
             return requestObserver;
           }
@@ -301,15 +290,12 @@ public class RouteGuideClientTest {
     verify(testHelper, never()).onRpcError(any(Throwable.class));
   }
 
-  /**
-   * Example for testing async client-streaming.
-   */
+  /** Example for testing async client-streaming. */
   @Test
   public void recordRoute_serverError() throws Exception {
     client.setRandom(noRandomness);
     Point point1 = Point.newBuilder().setLatitude(1).setLongitude(1).build();
-    final Feature requestFeature1 =
-        Feature.newBuilder().setLocation(point1).build();
+    final Feature requestFeature1 = Feature.newBuilder().setLocation(point1).build();
     final List<Feature> features = Arrays.asList(requestFeature1);
     final StatusRuntimeException fakeError = new StatusRuntimeException(Status.INVALID_ARGUMENT);
 
@@ -321,19 +307,17 @@ public class RouteGuideClientTest {
             // send an error immediately
             responseObserver.onError(fakeError);
 
-            StreamObserver<Point> requestObserver = new StreamObserver<Point>() {
-              @Override
-              public void onNext(Point value) {
-              }
+            StreamObserver<Point> requestObserver =
+                new StreamObserver<Point>() {
+                  @Override
+                  public void onNext(Point value) {}
 
-              @Override
-              public void onError(Throwable t) {
-              }
+                  @Override
+                  public void onError(Throwable t) {}
 
-              @Override
-              public void onCompleted() {
-              }
-            };
+                  @Override
+                  public void onCompleted() {}
+                };
             return requestObserver;
           }
         };
@@ -346,9 +330,7 @@ public class RouteGuideClientTest {
     assertEquals(fakeError.getStatus(), Status.fromThrowable(errorCaptor.getValue()));
   }
 
-  /**
-   * Example for testing bi-directional call.
-   */
+  /** Example for testing bi-directional call. */
   @Test
   public void routeChat_simpleResponse() throws Exception {
     RouteNote fakeResponse1 = RouteNote.newBuilder().setMessage("dummy msg1").build();
@@ -365,22 +347,22 @@ public class RouteGuideClientTest {
           public StreamObserver<RouteNote> routeChat(StreamObserver<RouteNote> responseObserver) {
             responseObserverRef.set(responseObserver);
 
-            StreamObserver<RouteNote> requestObserver = new StreamObserver<RouteNote>() {
-              @Override
-              public void onNext(RouteNote value) {
-                messagesDelivered.add(value.getMessage());
-                locationsDelivered.add(value.getLocation());
-              }
+            StreamObserver<RouteNote> requestObserver =
+                new StreamObserver<RouteNote>() {
+                  @Override
+                  public void onNext(RouteNote value) {
+                    messagesDelivered.add(value.getMessage());
+                    locationsDelivered.add(value.getLocation());
+                  }
 
-              @Override
-              public void onError(Throwable t) {
-              }
+                  @Override
+                  public void onError(Throwable t) {}
 
-              @Override
-              public void onCompleted() {
-                allRequestsDelivered.countDown();
-              }
-            };
+                  @Override
+                  public void onCompleted() {
+                    allRequestsDelivered.countDown();
+                  }
+                };
 
             return requestObserver;
           }
@@ -400,8 +382,7 @@ public class RouteGuideClientTest {
             Point.newBuilder().setLatitude(0).setLongitude(0).build(),
             Point.newBuilder().setLatitude(0).setLongitude(10_000_000).build(),
             Point.newBuilder().setLatitude(10_000_000).setLongitude(0).build(),
-            Point.newBuilder().setLatitude(10_000_000).setLongitude(10_000_000).build()
-        ),
+            Point.newBuilder().setLatitude(10_000_000).setLongitude(10_000_000).build()),
         locationsDelivered);
 
     // Let the server send out two simple response messages
@@ -419,9 +400,7 @@ public class RouteGuideClientTest {
     verify(testHelper, never()).onRpcError(any(Throwable.class));
   }
 
-  /**
-   * Example for testing bi-directional call.
-   */
+  /** Example for testing bi-directional call. */
   @Test
   public void routeChat_echoResponse() throws Exception {
     final List<RouteNote> notesDelivered = new ArrayList<>();
@@ -432,23 +411,24 @@ public class RouteGuideClientTest {
           @Override
           public StreamObserver<RouteNote> routeChat(
               final StreamObserver<RouteNote> responseObserver) {
-            StreamObserver<RouteNote> requestObserver = new StreamObserver<RouteNote>() {
-              @Override
-              public void onNext(RouteNote value) {
-                notesDelivered.add(value);
-                responseObserver.onNext(value);
-              }
+            StreamObserver<RouteNote> requestObserver =
+                new StreamObserver<RouteNote>() {
+                  @Override
+                  public void onNext(RouteNote value) {
+                    notesDelivered.add(value);
+                    responseObserver.onNext(value);
+                  }
 
-              @Override
-              public void onError(Throwable t) {
-                responseObserver.onError(t);
-              }
+                  @Override
+                  public void onError(Throwable t) {
+                    responseObserver.onError(t);
+                  }
 
-              @Override
-              public void onCompleted() {
-                responseObserver.onCompleted();
-              }
-            };
+                  @Override
+                  public void onCompleted() {
+                    responseObserver.onCompleted();
+                  }
+                };
 
             return requestObserver;
           }
@@ -457,8 +437,7 @@ public class RouteGuideClientTest {
 
     client.routeChat().await(1, TimeUnit.SECONDS);
 
-    String[] messages =
-        {"First message", "Second message", "Third message", "Fourth message"};
+    String[] messages = {"First message", "Second message", "Third message", "Fourth message"};
     for (int i = 0; i < 4; i++) {
       verify(testHelper).onMessage(notesDelivered.get(i));
       assertEquals(messages[i], notesDelivered.get(i).getMessage());
@@ -467,9 +446,7 @@ public class RouteGuideClientTest {
     verify(testHelper, never()).onRpcError(any(Throwable.class));
   }
 
-  /**
-   * Example for testing bi-directional call.
-   */
+  /** Example for testing bi-directional call. */
   @Test
   public void routeChat_errorResponse() throws Exception {
     final List<RouteNote> notesDelivered = new ArrayList<>();
@@ -481,22 +458,22 @@ public class RouteGuideClientTest {
           @Override
           public StreamObserver<RouteNote> routeChat(
               final StreamObserver<RouteNote> responseObserver) {
-            StreamObserver<RouteNote> requestObserver = new StreamObserver<RouteNote>() {
-              @Override
-              public void onNext(RouteNote value) {
-                notesDelivered.add(value);
-                responseObserver.onError(fakeError);
-              }
+            StreamObserver<RouteNote> requestObserver =
+                new StreamObserver<RouteNote>() {
+                  @Override
+                  public void onNext(RouteNote value) {
+                    notesDelivered.add(value);
+                    responseObserver.onError(fakeError);
+                  }
 
-              @Override
-              public void onError(Throwable t) {
-              }
+                  @Override
+                  public void onError(Throwable t) {}
 
-              @Override
-              public void onCompleted() {
-                responseObserver.onCompleted();
-              }
-            };
+                  @Override
+                  public void onCompleted() {
+                    responseObserver.onCompleted();
+                  }
+                };
 
             return requestObserver;
           }

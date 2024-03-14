@@ -14,7 +14,7 @@ public class RouteGuideTestClient {
     blockingStub = RouteGuideGrpc.newBlockingStub(channel);
   }
 
-  public void getFeature(Point point) {
-    blockingStub.getFeature(point);
+  public Feature getFeature(Point point) {
+    return blockingStub.getFeature(point);
   }
 }
