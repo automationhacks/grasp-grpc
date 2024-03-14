@@ -12,16 +12,17 @@ version = '1.0-SNAPSHOT'
 
 repositories {
     maven { // The google mirror is less flaky than mavenCentral()
-        url "https://maven-central.storage-download.googleapis.com/maven2/" }
+        url "https://maven-central.storage-download.googleapis.com/maven2/"
+    }
     mavenCentral()
 }
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_1_8
-    targetCompatibility = JavaVersion.VERSION_1_8
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
 }
 
-def grpcVersion = '1.61.0' // CURRENT_GRPC_VERSION
+def grpcVersion = '1.61.0'
 def protobufVersion = '3.25.1'
 def protocVersion = protobufVersion
 
@@ -34,8 +35,10 @@ dependencies {
     // examples/advanced need this for JsonFormat
     implementation "com.google.protobuf:protobuf-java-util:${protobufVersion}"
 
+
     runtimeOnly "io.grpc:grpc-netty-shaded:${grpcVersion}"
 
+    testImplementation 'com.google.truth:truth:1.4.2'
     testImplementation "io.grpc:grpc-testing:${grpcVersion}"
     testImplementation "io.grpc:grpc-inprocess:${grpcVersion}"
     testImplementation "junit:junit:4.13.2"
