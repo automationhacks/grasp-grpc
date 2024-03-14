@@ -2,11 +2,8 @@ package io.automationhacks.routeguide;
 
 import static com.google.common.truth.Truth.assertWithMessage;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
+import org.testng.annotations.Test;
 
-@RunWith(JUnit4.class)
 public class RouteGuideE2ETest {
 
   private static final String HOST = "localhost";
