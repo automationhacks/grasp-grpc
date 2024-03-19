@@ -69,7 +69,7 @@ sourceSets {
     }
 }
 
-task runTests(type: Test) {
+tasks.register('runTests', Test) {
     useTestNG() {
         testLogging.showStandardStreams = true
     }
