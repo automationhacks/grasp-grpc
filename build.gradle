@@ -35,6 +35,7 @@ dependencies {
     // examples/advanced need this for JsonFormat
     implementation "com.google.protobuf:protobuf-java-util:${protobufVersion}"
 
+    implementation 'com.github.myzhan:locust4j:2.2.3'
 
     runtimeOnly "io.grpc:grpc-netty-shaded:${grpcVersion}"
 
