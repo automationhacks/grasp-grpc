@@ -59,3 +59,12 @@ public static void main(String[] args) {
 ```
 
 Now you can go to the locust master URL and start your load test using locust UI
+
+### References
+
+- Blog from blazemeter https://www.blazemeter.com/blog/locust-performance-testing
+- Locust4j https://github.com/myzhan/locust4j
+- Example Main.java file https://github.com/myzhan/locust4j/blob/master/examples/task/Main.java to start a locust test
+- Locust Http load example project https://github.com/nejckorasa/locust4j-http-load
+- Locust Http load another example project https://github.com/nejckorasa/locust4j-http-load
+- wrk an example HTTP benchmarking tool https://github.com/wg/wrk

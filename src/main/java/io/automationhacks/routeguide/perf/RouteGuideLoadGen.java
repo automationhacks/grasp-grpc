@@ -1,10 +1,9 @@
 package io.automationhacks.routeguide.perf;
 
-import static io.automationhacks.routeguide.constants.Constants.LOCUST_MASTER_HOST;
-import static io.automationhacks.routeguide.constants.Constants.LOCUST_MASTER_PORT;
-
 import com.github.myzhan.locust4j.Locust;
 import io.automationhacks.routeguide.perf.tasks.GetFeatureTask;
+
+import static io.automationhacks.routeguide.constants.Constants.*;
 
 public class RouteGuideLoadGen {
 
@@ -16,8 +15,11 @@ public class RouteGuideLoadGen {
 
   private Locust configureLocustMaster() {
     var locust = Locust.getInstance();
+
     locust.setMasterHost(LOCUST_MASTER_HOST);
     locust.setMasterPort(LOCUST_MASTER_PORT);
+    locust.setMaxRPS(LOCUST_MAX_RPS);
+
     return locust;
   }
 

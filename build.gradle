@@ -110,7 +110,7 @@ createStartScripts('io.automationhacks.routeguide.RouteGuideServer')
 
 // Create executable jar with dependencies
 tasks.register('assembleJar', Jar) {
-    name = 'grasp-grpc-testing.jar'
+    archiveName = 'grasp-grpc-testing.jar'
     from sourceSets.main.allSource
     manifest {
         attributes 'Main-Class': 'io.automationhacks.routeguide.perf.RouteGuideLoadGen'
