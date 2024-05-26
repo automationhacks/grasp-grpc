@@ -62,6 +62,8 @@ Now you can go to the locust master URL and start your load test using locust UI
 
 ### References
 
+- Grpc Test Infra https://github.com/grpc/test-infra
+- Distributed Load Testing of REST/gRPC APIs using Locust https://github.com/pedrodeoliveira/locust-rest-grpc
 - Blog from blazemeter https://www.blazemeter.com/blog/locust-performance-testing
 - Locust4j https://github.com/myzhan/locust4j
 - Example Main.java file https://github.com/myzhan/locust4j/blob/master/examples/task/Main.java to start a locust test
