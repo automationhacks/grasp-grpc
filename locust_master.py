@@ -8,4 +8,4 @@ class DummyTask(TaskSet):
 
 
 class Dummy(User):
-    task_set = DummyTask
+    tasks = [DummyTask]
