@@ -39,7 +39,7 @@ dependencies {
 
     runtimeOnly "io.grpc:grpc-netty-shaded:${grpcVersion}"
 
-    testImplementation 'com.google.truth:truth:1.4.2'
+    implementation 'com.google.truth:truth:1.4.2'
     testImplementation "io.grpc:grpc-testing:${grpcVersion}"
     testImplementation "io.grpc:grpc-inprocess:${grpcVersion}"
     testImplementation "junit:junit:4.13.2"
@@ -107,3 +107,13 @@ createStartScripts('io.automationhacks.helloworld.HelloWorldClient')
 createStartScripts('io.automationhacks.helloworld.HelloWorldServer')
 createStartScripts('io.automationhacks.routeguide.RouteGuideClient')
 createStartScripts('io.automationhacks.routeguide.RouteGuideServer')
+
+// Create executable jar with dependencies
+tasks.register('assembleJar', Jar) {
+    name = 'grasp-grpc-testing.jar'
+    from sourceSets.main.allSource
+    manifest {
+        attributes 'Main-Class': 'io.automationhacks.routeguide.perf.RouteGuideLoadGen'
+    }
+    dependsOn configurations.runtimeClasspath
+}
