@@ -62,6 +62,7 @@ Now you can go to the locust master URL and start your load test using locust UI
 
 ### References
 
+- Locust python notes on Grpc testing https://docs.locust.io/en/stable/testing-other-systems.html#grpc
 - Grpc Test Infra https://github.com/grpc/test-infra
 - Distributed Load Testing of REST/gRPC APIs using Locust https://github.com/pedrodeoliveira/locust-rest-grpc
 - Blog from blazemeter https://www.blazemeter.com/blog/locust-performance-testing
