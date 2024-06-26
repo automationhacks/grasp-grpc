@@ -1,6 +1,39 @@
 # grasp-grpc
 
-## Running load test
+## Setup
+
+```zsh
+# Clone repo (One time)
+git clone https://github.com/automationhacks/grasp-grpc
+
+# Generate source files
+./gradlew installDist
+
+# Start server
+./build/install/grasp-grpc/bin/route-guide-server
+
+# Install gRPC UI (One time)
+brew install grpcui
+
+# Start gRPC UI
+grpcui -plaintext localhost:8980
+
+
+```
+
+## Unit testing
+
+```zsh
+# Run server unit tests
+./gradlew test --tests io.automationhacks.routeguide.RouteGuideServerTest
+
+# Run client unit tests
+./gradlew test --tests io.automationhacks.routeguide.RouteGuideClientTest
+```
+
+## E2E testing
+
+## Load testing
 
 Start locust master on local
 
