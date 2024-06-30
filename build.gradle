@@ -68,6 +68,12 @@ sourceSets {
             srcDirs 'build/generated/source/proto/main/java'
         }
     }
+    test {
+        java {
+            srcDirs 'src/test/java/io/automationhacks/helloworld'
+            srcDirs 'src/test/java/io/automationhacks/routeguide'
+        }
+    }
 }
 
 tasks.register('runTests', Test) {
@@ -77,7 +83,7 @@ tasks.register('runTests', Test) {
 }
 
 test {
-    useJUnitPlatform()
+    useJUnit()
 }
 
 startScripts.enabled = false

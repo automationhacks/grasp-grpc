@@ -25,10 +25,10 @@ grpcui -plaintext localhost:8980
 
 ```zsh
 # Run server unit tests via JUnit4
-./gradlew test --tests io.automationhacks.routeguide.RouteGuideServerTest
+./gradlew clean test --tests io.automationhacks.routeguide.RouteGuideServerTest --info
 
 # Run client unit tests via JUnit4
-./gradlew test --tests io.automationhacks.routeguide.RouteGuideClientTest
+./gradlew clean test --tests io.automationhacks.routeguide.RouteGuideClientTest --info
 ```
 
 ## E2E testing
