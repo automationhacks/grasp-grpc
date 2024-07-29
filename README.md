@@ -41,7 +41,7 @@ grpcui -plaintext localhost:8980
 ## Run Unit and E2E tests
 
 ```zsh
-./gradlew clean test --info
+./gradlew clean build --info
 ```
 
 ## Load testing

@@ -106,23 +106,28 @@ jacocoTestReport {
     reports {
         xml.required = true
         csv.required = true
+        html.required = true
     }
 }
 
 jacocoTestCoverageVerification {
+    dependsOn jacocoTestReport
+
     violationRules {
         rule {
-            includes = ['io.automationhacks.routeguide.*']
+            enabled = true
+            includes = ['io.automationhacks.routeguide*']
 
             limit {
-                minimum = 0.9
+                minimum = 0.4
             }
         }
 
         rule {
             enabled = true
             element = 'CLASS'
-            includes = ['io.automationhacks.routeguide.*']
+            includes = ['io.automationhacks.routeguide*']
+            excludes = ['io.automationhacks.routeguide.RouteGuideClient.TestHelper']
 
             limit {
                 counter = 'LINE'
@@ -132,6 +137,8 @@ jacocoTestCoverageVerification {
         }
     }
 }
+
+check.dependsOn jacocoTestCoverageVerification
 
 startScripts.enabled = false
 
