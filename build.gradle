@@ -5,6 +5,7 @@ plugins {
     id 'com.google.protobuf' version '0.9.4'
     // Generate IntelliJ IDEA's .idea & .iml project files
     id 'idea'
+    id 'jacoco'
 }
 
 group = 'io.automationhacks'
@@ -80,10 +81,56 @@ tasks.register('runTests', Test) {
     useTestNG() {
         testLogging.showStandardStreams = true
     }
+
+    // JaCoCo report is generated after test run finishes
+    finalizedBy jacocoTestReport
 }
 
 test {
     useJUnit()
+
+    // JaCoCo report is generated after test run finishes
+    finalizedBy jacocoTestReport
+}
+
+jacoco {
+    toolVersion = "0.8.12"
+}
+
+jacocoTestReport {
+    // the task has a dependency on tests to be run before coverage could be generated
+    dependsOn test
+    dependsOn runTests
+
+    // We can specify different formats in which JaCoCo returns code coverage data in
+    reports {
+        xml.required = true
+        csv.required = true
+    }
+}
+
+jacocoTestCoverageVerification {
+    violationRules {
+        rule {
+            includes = ['io.automationhacks.routeguide.*']
+
+            limit {
+                minimum = 0.9
+            }
+        }
+
+        rule {
+            enabled = true
+            element = 'CLASS'
+            includes = ['io.automationhacks.routeguide.*']
+
+            limit {
+                counter = 'LINE'
+                value = 'TOTALCOUNT'
+                minimum = 0.4
+            }
+        }
+    }
 }
 
 startScripts.enabled = false

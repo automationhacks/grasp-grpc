@@ -38,6 +38,12 @@ grpcui -plaintext localhost:8980
 ./gradlew clean runTests
 ```
 
+## Run Unit and E2E tests
+
+```zsh
+./gradlew clean test --info
+```
+
 ## Load testing
 
 Start locust master on local
