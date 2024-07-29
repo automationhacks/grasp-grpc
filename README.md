@@ -38,10 +38,16 @@ grpcui -plaintext localhost:8980
 ./gradlew clean runTests
 ```
 
-## Run Unit and E2E tests
+## Collect code coverage
 
 ```zsh
 ./gradlew clean build --info
+```
+
+If you only build without running the tests, you'll notice the code does not fail
+
+```zsh
+./gradlew clean build -x test --info
 ```
 
 ## Load testing
