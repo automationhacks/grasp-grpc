@@ -8,6 +8,11 @@ plugins {
     id 'jacoco'
 }
 
+configurations {
+    jacocoAgent
+    jacocoAnt
+}
+
 group = 'io.automationhacks'
 version = '1.0-SNAPSHOT'
 
@@ -48,7 +53,9 @@ dependencies {
     testImplementation platform('org.junit:junit-bom:5.9.1')
     testImplementation 'org.junit.jupiter:junit-jupiter'
 
-    testImplementation 'org.testng:testng:7.7.0'
+    testImplementation 'org.testng:testng:7.8.0'
+    implementation 'org.jacoco:org.jacoco.agent:0.8.11'
+    implementation 'org.jacoco:org.jacoco.core:0.8.11'
 }
 
 protobuf {
@@ -84,6 +91,11 @@ tasks.register('runTests', Test) {
 
     // JaCoCo report is generated after test run finishes
     finalizedBy jacocoTestReport
+
+    doFirst {
+        // Ensure the coverage file directory exists
+        file("${buildDir}/jacoco").mkdirs()
+    }
 }
 
 test {
@@ -102,12 +114,33 @@ jacocoTestReport {
     dependsOn test
     dependsOn runTests
 
+    executionData files("${buildDir}/jacoco/server.exec")
+
     // We can specify different formats in which JaCoCo returns code coverage data in
     reports {
         xml.required = true
         csv.required = true
         html.required = true
     }
+}
+
+// Add JaCoCo runtime agent configuration
+def jacocoAgent = "$buildDir/tmp/jacocoagent.jar"
+task copyJacocoAgent(type: Copy) {
+    from configurations.jacocoAgent
+    into "$buildDir/tmp"
+    rename { 'jacocoagent.jar' }
+}
+
+// Task to start the gRPC server with JaCoCo agent
+task runServerWithCoverage(type: JavaExec) {
+    dependsOn copyJacocoAgent
+    classpath = sourceSets.main.runtimeClasspath
+    mainClass = 'io.automationhacks.Main' // Replace with your server main class
+
+    jvmArgs = [
+            "-javaagent:${jacocoAgent}=destfile=${buildDir}/jacoco/server.exec,output=tcpserver,address=*,port=6300"
+    ]
 }
 
 jacocoTestCoverageVerification {

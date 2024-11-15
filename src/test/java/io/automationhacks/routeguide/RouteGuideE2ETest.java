@@ -2,6 +2,8 @@ package io.automationhacks.routeguide;
 
 import static com.google.common.truth.Truth.assertWithMessage;
 
+import io.automationhacks.testing.JacocoCoverageCollector;
+import org.testng.annotations.AfterTest;
 import org.testng.annotations.Test;
 
 public class RouteGuideE2ETest {
@@ -24,5 +26,10 @@ public class RouteGuideE2ETest {
             "Could not find the feature at lat: %s long: %s".formatted(latitude, longitude))
         .that(response.getName())
         .isEqualTo("Patriots Path, Mendham, NJ 07945, USA");
+  }
+
+  @AfterTest()
+  public void afterTest() {
+    JacocoCoverageCollector.dumpCoverage();
   }
 }
