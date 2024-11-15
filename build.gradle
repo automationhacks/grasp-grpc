@@ -56,6 +56,7 @@ dependencies {
     testImplementation 'org.testng:testng:7.8.0'
     implementation 'org.jacoco:org.jacoco.agent:0.8.11'
     implementation 'org.jacoco:org.jacoco.core:0.8.11'
+    jacocoAgent "org.jacoco:org.jacoco.agent:0.8.11:runtime"
 }
 
 protobuf {
@@ -116,6 +117,11 @@ jacocoTestReport {
 
     executionData files("${buildDir}/jacoco/server.exec")
 
+    doFirst {
+        executionData.from(files(executionData.files.findAll { it.exists() }))
+        println "Looking for coverage data in: ${executionData.files}"
+    }
+
     // We can specify different formats in which JaCoCo returns code coverage data in
     reports {
         xml.required = true
@@ -134,12 +140,21 @@ task copyJacocoAgent(type: Copy) {
 
 // Task to start the gRPC server with JaCoCo agent
 task runServerWithCoverage(type: JavaExec) {
+    doFirst {
+        // Ensure directory exists
+        file("${buildDir}/jacoco").mkdirs()
+
+        // Log the JaCoCo configuration
+        println "JaCoCo agent path: ${configurations.jacocoAgent.singleFile}"
+        println "Coverage file will be written to: ${buildDir}/jacoco/server.exec"
+    }
+
     dependsOn copyJacocoAgent
     classpath = sourceSets.main.runtimeClasspath
-    mainClass = 'io.automationhacks.Main' // Replace with your server main class
+    mainClass = 'io.automationhacks.routeguide.RouteGuideServer' // Replace with your server main class
 
     jvmArgs = [
-            "-javaagent:${jacocoAgent}=destfile=${buildDir}/jacoco/server.exec,output=tcpserver,address=*,port=6300"
+            "-javaagent:${jacocoAgent}=destfile=${buildDir}/jacoco/server.exec,output=tcpserver,address=*,port=6300,dumponexit=true"
     ]
 }
 
