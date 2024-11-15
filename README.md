@@ -12,6 +12,9 @@ git clone https://github.com/automationhacks/grasp-grpc
 # Start server
 ./build/install/grasp-grpc/bin/route-guide-server
 
+# If you want to run it via gradle 
+./gradlew runServerWithCoverage
+
 # Install gRPC UI (One time)
 brew install grpcui
 
